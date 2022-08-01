@@ -1,37 +1,57 @@
 package cinema.controller;
 
 import cinema.model.Film;
+import cinema.model.FilmRequestDto;
+import cinema.model.FilmResponseDto;
 import cinema.service.FilmService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.http.*;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
 public class FilmController {
 
     private final FilmService filmService;
+    private final Environment env;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public void addFilm(String keyword){
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public FilmResponseDto addFilm(@ModelAttribute FilmRequestDto filmRequestDto) {
 
-        System.out.println(1);
-        String urlFilms = "https://kinopoiskapiunofficial.tech/api/v2.2/films/?keyword="+keyword;
-        String token = "fab0471f-1dfa-464b-8572-a78594f2ed5f";
+
+        String urlFilms = "https://kinopoiskapiunofficial.tech/api/v2.2/films";
+
+
+
+        String builder = UriComponentsBuilder
+                .fromUriString(urlFilms)
+                .queryParam("keyword", filmRequestDto.getKeyword())
+                .queryParam("genre", filmRequestDto.getGenre())
+                .queryParam("yearFrom", filmRequestDto.getYearFrom())
+                .queryParam("ratingFrom", filmRequestDto.getRatingFrom())
+                .build().toUriString();
+
+
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("X-API-KEY", token);
-        HttpEntity<Film> req = new HttpEntity<>(headers);
+        headers.set("X-API-KEY", env.getProperty("my_apikey"));
+        HttpEntity<FilmResponseDto> req = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Film> response = restTemplate.exchange(urlFilms, HttpMethod.GET, req, Film.class);
-        Film film = response.getBody();
-        filmService.add(film);
+        ResponseEntity<FilmResponseDto> response = restTemplate.exchange(builder, HttpMethod.GET, req, FilmResponseDto.class);
+        FilmResponseDto film = response.getBody();
+//        List<Film> f = film.getList();
+//        for (Film a : f) {
+//            filmService.add(a);
+//        }
+        return film;
     }
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public void  addFilms(@ModelAttribute("keyword") String keyword){
-        addFilm(keyword);
-    }
+
+
 }

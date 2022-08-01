@@ -4,32 +4,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @Table(name = "Films")
-public class Film {
+public class Film implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long filmId;
+    private String imdbId;
 
-    private String filmName;
+    private String nameRu;
 
-    private int year;
+    private Integer year;
 
-    private double rating;
+    private Integer ratingImdb;
 
-    private String description;
+    private String nameOriginal;
 
-    public Film(Long filmId, String filmName, int year, double rating, String description){
-        this.description = description;
-        this.filmId = filmId;
-        this.filmName = filmName;
+    public Film(String imdbId, String nameRu, Integer year, Integer ratingImdb, String nameOriginal){
+        this.nameOriginal = nameOriginal;
+        this.imdbId = imdbId;
+        this.nameRu = nameRu;
         this.year = year;
-        this.rating = rating;
+        this.ratingImdb = ratingImdb;
     }
 }
