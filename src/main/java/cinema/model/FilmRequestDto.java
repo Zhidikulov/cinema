@@ -12,7 +12,6 @@ public class FilmRequestDto {
     Integer genre;
     Integer ratingFrom;
     Integer yearFrom;
-    int max;
-    long offset;
+    Integer page;
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -35,6 +36,7 @@ public class FilmController {
                 .queryParam("genre", filmRequestDto.getGenre())
                 .queryParam("yearFrom", filmRequestDto.getYearFrom())
                 .queryParam("ratingFrom", filmRequestDto.getRatingFrom())
+                .queryParam("page", filmRequestDto.getPage())
                 .build().toUriString();
 
 
@@ -46,10 +48,10 @@ public class FilmController {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<FilmResponseDto> response = restTemplate.exchange(builder, HttpMethod.GET, req, FilmResponseDto.class);
         FilmResponseDto film = response.getBody();
-//        List<Film> f = film.getList();
-//        for (Film a : f) {
-//            filmService.add(a);
-//        }
+        Set<Film> f = film.getItems();
+        for (Film a : f) {
+            filmService.add(a);
+        }
         return film;
     }
 

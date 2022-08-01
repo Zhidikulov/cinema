@@ -14,7 +14,7 @@ import java.util.Set;
 public class FilmResponseDto {
     Long total;
     Long totalPages;
-    List<Film> items;
+    Set<Film> items;
 
 
 }
