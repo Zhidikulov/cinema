@@ -3,10 +3,10 @@ package cinema.dao;
 import cinema.model.Film;
 import cinema.model.FilmParamDto;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -23,6 +23,22 @@ public class FilmDaoImp {
     private final EntityManager en;
 
 
+    public Integer nameFilm(Integer id) {
+        CriteriaBuilder cb = en.getCriteriaBuilder();
+        CriteriaQuery<Film> cq = cb.createQuery(Film.class);
+        Root<Film> root = cq.from(Film.class);
+        cq.select(root).where(root.get("kinopoiskId").in(id));
+        TypedQuery<Film> tq = en.createQuery(cq);
+        tq.setMaxResults(1);
+        try {
+            Film f = tq.getSingleResult();
+            return f.getKinopoiskId();
+        } catch (NoResultException e) {
+            return 0;
+        }
+
+    }
+
     public List<Film> filtr(FilmParamDto f) {
         int pageNumber = 1;
         int pageSize = 20;
@@ -37,7 +53,9 @@ public class FilmDaoImp {
         if (f.getKeyword() != null) {
             List<String> str = new ArrayList<>();
             str.add(f.getKeyword());
-            pr.add(root.get("nameRu").in(str));
+            for (String s : str) {
+                pr.add(cb.like(root.get("nameRu"), "%" + s + "%"));
+            }
         }
         if (f.getRatingFrom() != null) {
             pr.add(cb.gt(root.get("ratingImdb"), f.getRatingFrom()));
@@ -53,7 +71,7 @@ public class FilmDaoImp {
         }
         cr.select(root).where(pr.toArray(new Predicate[0]));
         TypedQuery<Film> query = en.createQuery(cr);
-        while(pageNumber < count.intValue()){
+        while (pageNumber < count.intValue()) {
             query.setFirstResult(pageNumber - 1);
             query.setMaxResults(pageSize);
             pageNumber += pageSize;

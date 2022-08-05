@@ -17,7 +17,7 @@ public class Film implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imdbId;
+    private Integer kinopoiskId;
 
     private String nameRu;
 
@@ -27,9 +27,9 @@ public class Film implements Serializable {
 
     private String nameOriginal;
 
-    public Film(String imdbId, String nameRu, Integer year, Integer ratingImdb, String nameOriginal){
+    public Film(Integer kinopoiskId, String nameRu, Integer year, Integer ratingImdb, String nameOriginal){
         this.nameOriginal = nameOriginal;
-        this.imdbId = imdbId;
+        this.kinopoiskId = kinopoiskId;
         this.nameRu = nameRu;
         this.year = year;
         this.ratingImdb = ratingImdb;
