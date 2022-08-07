@@ -3,6 +3,7 @@ package cinema.dao;
 import cinema.model.Film;
 import cinema.model.FilmParamDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class FilmDaoImp {
 
 
@@ -56,6 +58,9 @@ public class FilmDaoImp {
             for (String s : str) {
                 pr.add(cb.like(root.get("nameRu"), "%" + s + "%"));
             }
+        }
+        if(f.getGenre() != null){
+            pr.add(cb.like(root.get("genres"), "%" + f.getGenre() + "%"));
         }
         if (f.getRatingFrom() != null) {
             pr.add(cb.gt(root.get("ratingImdb"), f.getRatingFrom()));

@@ -3,17 +3,16 @@ package cinema.service;
 import cinema.client.FilmClient;
 import cinema.dao.FilmDao;
 import cinema.dao.FilmDaoImp;
-import cinema.model.Film;
-import cinema.model.FilmParamDto;
-import cinema.model.FilmRequestDto;
-import cinema.model.FilmResponseDto;
+import cinema.model.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -34,12 +33,12 @@ public class FilmServiceImp implements FilmService{
     @Override
     public FilmResponseDto addFilm(FilmRequestDto filmRequestDto){
         FilmResponseDto frd = filmClient.restFilm(filmRequestDto);
-        Set<Film> films = frd.getItems();
-        for(Film f: films){
+        List<FilmBody> films = frd.getItems();
+        for(FilmBody f: films){
             Integer a = f.getKinopoiskId();
             if(a.equals(filmDaoImp.nameFilm(a)) != true){
-
-                filmDao.save(f);
+                Film film = new Film(f.getKinopoiskId(), f.getNameRu(), f.getYear(), f.getRatingImdb(), String.join(", ", f.getGenres()));
+                filmDao.save(film);
             }
         }
         return frd;

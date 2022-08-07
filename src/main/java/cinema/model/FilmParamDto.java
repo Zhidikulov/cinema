@@ -13,4 +13,5 @@ public class FilmParamDto {
     Integer yearFrom;
     Integer yearTo;
     String keyword;
+    String genre;
 }

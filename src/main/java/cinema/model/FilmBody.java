@@ -3,19 +3,13 @@ package cinema.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity
+
 @Data
 @NoArgsConstructor
-@Table(name = "Films")
-public class Film implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class FilmBody implements Serializable {
 
     private Integer kinopoiskId;
 
@@ -25,9 +19,9 @@ public class Film implements Serializable {
 
     private Integer ratingImdb;
 
-    private String genres;
+    private List<String> genres;
 
-    public Film(Integer kinopoiskId, String nameRu, Integer year, Integer ratingImdb, String genres){
+    public FilmBody(Integer kinopoiskId, String nameRu, Integer year, Integer ratingImdb, List<String> genres) {
         this.genres = genres;
         this.kinopoiskId = kinopoiskId;
         this.nameRu = nameRu;
@@ -35,3 +29,5 @@ public class Film implements Serializable {
         this.ratingImdb = ratingImdb;
     }
 }
+
+
