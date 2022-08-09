@@ -33,12 +33,11 @@ public class FilmServiceImp implements FilmService{
     @Override
     public FilmResponseDto addFilm(FilmRequestDto filmRequestDto){
         FilmResponseDto frd = filmClient.restFilm(filmRequestDto);
-        List<FilmBody> films = frd.getItems();
-        for(FilmBody f: films){
+        List<Film> films = frd.getItems();
+        for(Film f: films){
             Integer a = f.getKinopoiskId();
-            if(a.equals(filmDaoImp.nameFilm(a)) != true){
-                Film film = new Film(f.getKinopoiskId(), f.getNameRu(), f.getYear(), f.getRatingImdb(), String.join(", ", f.getGenres()));
-                filmDao.save(film);
+            if(!a.equals(filmDaoImp.idFilm(a))){
+                filmDao.save(f);
             }
         }
         return frd;

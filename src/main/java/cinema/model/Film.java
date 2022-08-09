@@ -25,10 +25,12 @@ public class Film implements Serializable {
 
     private Integer ratingImdb;
 
-    private String genres;
+//    @ElementCollection
+//    @CollectionTable(name="Genres_films", joinColumns=@JoinColumn(name="film_id"))
+    private String nameOriginal;
 
-    public Film(Integer kinopoiskId, String nameRu, Integer year, Integer ratingImdb, String genres){
-        this.genres = genres;
+    public Film(Integer kinopoiskId, String nameRu, Integer year, Integer ratingImdb, String nameOriginal){
+        this.nameOriginal = nameOriginal;
         this.kinopoiskId = kinopoiskId;
         this.nameRu = nameRu;
         this.year = year;

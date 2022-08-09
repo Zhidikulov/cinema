@@ -23,19 +23,15 @@ public class FilmDaoImp {
 
 
     private final EntityManager en;
+    private final FilmDao filmDao;
 
 
-    public Integer nameFilm(Integer id) {
-        CriteriaBuilder cb = en.getCriteriaBuilder();
-        CriteriaQuery<Film> cq = cb.createQuery(Film.class);
-        Root<Film> root = cq.from(Film.class);
-        cq.select(root).where(root.get("kinopoiskId").in(id));
-        TypedQuery<Film> tq = en.createQuery(cq);
-        tq.setMaxResults(1);
+    public Integer idFilm(Integer id) {
         try {
-            Film f = tq.getSingleResult();
-            return f.getKinopoiskId();
+            return filmDao.findByKinopoiskId(id).getKinopoiskId();
         } catch (NoResultException e) {
+            return 0;
+        } catch (NullPointerException e1) {
             return 0;
         }
 

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FilmDao extends JpaRepository<Film, Long> {
-
+Film findByKinopoiskId(Integer kinopoiskId);
 }
