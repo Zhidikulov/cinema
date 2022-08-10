@@ -1,14 +1,29 @@
 package cinema.service;
 
+import cinema.client.Email;
 import cinema.client.FilmClient;
+import cinema.configuration.EmailConfiguration;
 import cinema.dao.FilmDao;
 import cinema.dao.FilmDaoImp;
 import cinema.model.*;
+import com.thoughtworks.xstream.XStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +37,8 @@ public class FilmServiceImp implements FilmService{
     private final FilmDao filmDao;
     private  final FilmDaoImp filmDaoImp;
     private final FilmClient filmClient;
+    private final XStream xStream;
+    private final Email email;
 
 
 
@@ -43,6 +60,24 @@ public class FilmServiceImp implements FilmService{
         return frd;
     }
 
+    @Override
+    public void getEmail(FilmParamDto f) throws IOException, MessagingException {
+        List<Film> films = filmDaoImp.filtr(f);
+        File f1 = new File("C:\\XML/file.xml");
+        if(!f1.exists()){
+            f1.createNewFile();
+        }
+        BufferedWriter file = new BufferedWriter(new FileWriter(f1));
+        for(Film f2: films) {
+            String dataXML = xStream.toXML(f2);
+            file.write(dataXML);
+        }
+        file.close();
+
+        email.getEmail();
+
+
+    }
 
 
 }

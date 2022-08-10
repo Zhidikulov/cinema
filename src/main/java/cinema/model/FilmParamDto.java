@@ -14,4 +14,6 @@ public class FilmParamDto {
     Integer yearTo;
     String keyword;
     String genre;
+    int pageNumber;
+    int pageSize;
 }

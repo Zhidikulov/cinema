@@ -37,9 +37,9 @@ public class FilmDaoImp {
 
     }
 
-    public List<Film> filtr(FilmParamDto f) {
-        int pageNumber = 1;
-        int pageSize = 20;
+    public List<Film> filtrs(FilmParamDto f) {
+        int pageNumber = f.getPageNumber();
+        int pageSize = f.getPageSize();
         List<Film> films = new ArrayList<>();
         CriteriaBuilder cb = en.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
@@ -55,7 +55,7 @@ public class FilmDaoImp {
                 pr.add(cb.like(root.get("nameRu"), "%" + s + "%"));
             }
         }
-        if(f.getGenre() != null){
+        if (f.getGenre() != null) {
             pr.add(cb.like(root.get("genres"), "%" + f.getGenre() + "%"));
         }
         if (f.getRatingFrom() != null) {
@@ -77,9 +77,41 @@ public class FilmDaoImp {
             query.setMaxResults(pageSize);
             pageNumber += pageSize;
             return query.getResultList();
-
         }
-        films = query.getResultList();
+//        films = query.getResultList();
         return films;
+    }
+
+    public List<Film> filtr(FilmParamDto f) {
+        CriteriaBuilder cb = en.getCriteriaBuilder();
+        CriteriaQuery<Film> cr = cb.createQuery(Film.class);
+        Root<Film> root = cr.from(Film.class);
+        List<Predicate> pr = new ArrayList<>();
+        if (f.getKeyword() != null) {
+            List<String> str = new ArrayList<>();
+            str.add(f.getKeyword());
+            for (String s : str) {
+                pr.add(cb.like(root.get("nameRu"), "%" + s + "%"));
+            }
+        }
+        if (f.getGenre() != null) {
+            pr.add(cb.like(root.get("genres"), "%" + f.getGenre() + "%"));
+        }
+        if (f.getRatingFrom() != null) {
+            pr.add(cb.gt(root.get("ratingImdb"), f.getRatingFrom()));
+        }
+        if (f.getRatingTo() != null) {
+            pr.add(cb.lt(root.get("ratingImdb"), f.getRatingTo()));
+        }
+        if (f.getYearFrom() != null) {
+            pr.add(cb.gt(root.get("year"), f.getYearFrom()));
+        }
+        if (f.getYearTo() != null) {
+            pr.add(cb.lt(root.get("year"), f.getYearTo()));
+        }
+        cr.select(root).where(pr.toArray(new Predicate[0]));
+        TypedQuery<Film> query = en.createQuery(cr);
+        return query.getResultList();
+
     }
 }

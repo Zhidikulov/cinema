@@ -1,5 +1,6 @@
 package cinema.configuration;
 
+import com.thoughtworks.xstream.XStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -16,5 +17,9 @@ public class FilmConfiguration {
     public RestTemplate restTemplate(){
         return new RestTemplate();
     }
+
+    @Bean
+    public XStream xStream(){return new XStream();}
+
 
 }
