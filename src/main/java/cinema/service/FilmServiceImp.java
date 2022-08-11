@@ -2,7 +2,6 @@ package cinema.service;
 
 import cinema.client.Email;
 import cinema.client.FilmClient;
-import cinema.configuration.EmailConfiguration;
 import cinema.dao.FilmDao;
 import cinema.dao.FilmDaoImp;
 import cinema.model.*;
@@ -12,20 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -47,6 +38,8 @@ public class FilmServiceImp implements FilmService{
         return filmDaoImp.filtr(f);
     }
 
+
+
     @Override
     public FilmResponseDto addFilm(FilmRequestDto filmRequestDto){
         FilmResponseDto frd = filmClient.restFilm(filmRequestDto);
@@ -62,7 +55,7 @@ public class FilmServiceImp implements FilmService{
 
     @Override
     public void getEmail(FilmParamDto f) throws IOException, MessagingException {
-        List<Film> films = filmDaoImp.filtr(f);
+        List<Film> films = filmDaoImp.filtrs(f);
         File f1 = new File("C:\\XML/file.xml");
         if(!f1.exists()){
             f1.createNewFile();
@@ -74,7 +67,7 @@ public class FilmServiceImp implements FilmService{
         }
         file.close();
 
-        email.getEmail();
+        email.getEmail(f.getTo());
 
 
     }

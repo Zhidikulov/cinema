@@ -16,4 +16,5 @@ public class FilmParamDto {
     String genre;
     int pageNumber;
     int pageSize;
+    String to;
 }

@@ -78,7 +78,6 @@ public class FilmDaoImp {
             pageNumber += pageSize;
             return query.getResultList();
         }
-//        films = query.getResultList();
         return films;
     }
 

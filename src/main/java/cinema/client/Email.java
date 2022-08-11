@@ -1,15 +1,14 @@
 package cinema.client;
 
-import cinema.configuration.EmailConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.io.IOException;
 
@@ -19,22 +18,23 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class Email {
 
-    private final EmailConfiguration session;
-    final String from = "from";
+    private final JavaMailSender emailSender;
 
-    public void getEmail() throws MessagingException, IOException {
-        Message message = new MimeMessage(session.getSession());
-        message.setFrom(new InternetAddress(from));
-        message.setRecipients(
-                Message.RecipientType.TO, InternetAddress.parse("to"));
-        message.setSubject("Mail Subject");
-        MimeBodyPart attachmentBodyPart = new MimeBodyPart();
-        attachmentBodyPart.attachFile(new File("C:\\XML/file.xml"));
-        Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(attachmentBodyPart);
+    public void getEmail(String to) throws MessagingException {
 
-        message.setContent(multipart);
+        MimeMessage message = emailSender.createMimeMessage();
 
-        Transport.send(message);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setFrom("from");
+        helper.setTo(to);
+        helper.setSubject("Отчет");
+        helper.setText("Отчет по фильмам");
+
+        FileSystemResource file
+                = new FileSystemResource(new File("C:\\XML/file.xml"));
+        helper.addAttachment("Invoice", file);
+
+        emailSender.send(message);
     }
 }
